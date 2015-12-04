@@ -2,18 +2,71 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <style>
-      body {
-        margin: 0px;
-        padding: 0px;
-      }
-    </style>
+	<meta charset="utf-8" />
+	<title>HTML5 canvas</title>
+	<link href="css/main.css" rel="stylesheet" type="text/css" />
+	<script src="js/draw.js"></script>
   </head>
   <body>
-  	<div id="paint" length=500 height=500>
-  		<canvas id="myCanvas"></canvas>
+  	<div id="paint" >
+  		<canvas id="myCanvas" width="500" height="500" style="border:2px solid #000000;"></canvas>
 	</div>
-    <script>
+	<div id="buttons">
+		<input type="button" id="clear" value="Clear">
+    </div>
+    <!--script>
+      function loadImages(sources, callback) {
+        var images = {};
+        var loadedImages = 0;
+        var numImages = 0;
+        // get num of sources
+        for(var src in sources) {
+          numImages++;
+        }
+        for(var src in sources) {
+          images[src] = new Image();
+          images[src].onload = function() {
+            if(++loadedImages >= numImages) {
+              callback(images);
+            }
+          };
+          images[src].src = sources[src];
+        }
+      }
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+
+      var sources = {
+        pohja: 'http://i2.wp.com/www.unelmatalosta.com/wp-content/uploads/2015/06/1krs-pohjapiirrustus-unelmatalosta.jpg?resize=610%2C600',
+      };
+
+      loadImages(sources, function(images) {
+        context.drawImage(images.darthVader, 100, 30, 200, 137);
+        context.drawImage(images.yoda, 350, 55, 93, 104);
+      });
+
+    </script-->
+	<script>
+	function loadImages(sources, callback) {
+        var images = {};
+        var loadedImages = 0;
+        var numImages = 0;
+        // get num of sources
+        for(var src in sources) {
+          numImages++;
+        }
+        for(var src in sources) {
+          images[src] = new Image();
+          images[src].onload = function() {
+            if(++loadedImages >= numImages) {
+              callback(images);
+            }
+          };
+          images[src].src = sources[src];
+        }
+      }
+	
+	
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
  
@@ -21,14 +74,12 @@ var painting = document.getElementById('paint');
 var paint_style = getComputedStyle(painting);
 canvas.width = parseInt(paint_style.getPropertyValue('width'));
 canvas.height = parseInt(paint_style.getPropertyValue('height'));
-
 var mouse = {x: 0, y: 0};
  
 canvas.addEventListener('mousemove', function(e) {
   mouse.x = e.pageX - this.offsetLeft;
   mouse.y = e.pageY - this.offsetTop;
 }, false);
-
 ctx.lineWidth = 3;
 ctx.lineJoin = 'round';
 ctx.lineCap = 'round';
@@ -47,12 +98,28 @@ canvas.addEventListener('mouseup', function() {
 	ctx.lineTo(mouse.x, mouse.y);
 	ctx.stroke();
 }, false);
+	
 var onPaint = function() {
     //ctx.lineTo(mouse.x, mouse.y);
-    
 	//ctx.stroke();
 };
 
+// bind event handler to clear button
+      document.getElementById('clear').addEventListener('click', function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, false);
+
+	   
+
+      var sources = {
+        pohja: 'http://i2.wp.com/www.unelmatalosta.com/wp-content/uploads/2015/06/1krs-pohjapiirrustus-unelmatalosta.jpg?resize=610%2C600',
+
+      };
+
+      loadImages(sources, function(images) {
+        ctx.drawImage(images.pohja, 100, 30, 500, 500);
+      });
+	  
     </script>
   </body>
 </html>            
