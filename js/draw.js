@@ -1,8 +1,13 @@
 
 		var onPaint = function() {
-			ctx.moveTo(x, y);
-			ctx.lineTo(mouse.x, mouse.y);
-			ctx.stroke();
+			tmpctx.clearRect(0, 0, tmpcanvas.width, tmpcanvas.height);
+			
+			tmpctx.beginPath();	
+
+			tmpctx.moveTo(x, y);
+			tmpctx.lineTo(mouse.x, mouse.y);
+			
+			tmpctx.stroke();
 		};
 
 		var sources = {
@@ -10,13 +15,17 @@
 
 		};
 		
+		var imagecanvas = document.getElementById('imageCanvas');
 		var canvas = document.getElementById('myCanvas');
+		var tmpcanvas = document.getElementById('tmpCanvas');
+		
+		var imagectx = imagecanvas.getContext('2d');
 		var ctx = canvas.getContext('2d');
+		var tmpctx = tmpcanvas.getContext('2d');
 
 		var painting = document.getElementById('paint');
 		var paint_style = getComputedStyle(painting);
-		// canvas.width = parseInt(paint_style.getPropertyValue('width'));
-		// canvas.height = parseInt(paint_style.getPropertyValue('height'));
+
 		var mouse = {x: 0, y: 0};
 		var x;
 		var y;
@@ -42,40 +51,45 @@
 
 		function init (){
 			loadImages(sources, function(images) {
-				ctx.drawImage(images.pohja, 100, 30, 500, 500);
+				imagectx.drawImage(images.pohja, 100, 30, 500, 500);
 			});
 		}
 
 		init();
 
-		canvas.addEventListener('mousemove', function(e) {
+		tmpcanvas.addEventListener('mousemove', function(e) {
 			mouse.x = e.pageX - this.offsetLeft;
 			mouse.y = e.pageY - this.offsetTop;
 		}, false);
 
-		ctx.lineWidth = 3;
-		ctx.lineJoin = 'round';
-		ctx.lineCap = 'round';
-		ctx.strokeStyle = '#00CC99';
+		tmpctx.lineWidth = 3;
+		tmpctx.lineJoin = 'round';
+		tmpctx.lineCap = 'round';
+		tmpctx.strokeStyle = '#00CC99';
 
-		canvas.addEventListener('mousedown', function(e) {
-			ctx.beginPath();	
-			ctx.moveTo(mouse.x, mouse.y);
+		tmpcanvas.addEventListener('mousedown', function(e) {
+			tmpcanvas.addEventListener('mousemove', onPaint, false);
+			
+			mouse.x = typeof e.offsetX !== 'undefined' ? e.offsetX : e.layerX;
+			mouse.y = typeof e.offsetY !== 'undefined' ? e.offsetY : e.layerY;
+			
 			x = mouse.x;
 			y = mouse.y;
-			canvas.addEventListener('mousemove', onPaint, false);
+			
 		}, false);
 
-		canvas.addEventListener('mouseup', function() {
-			canvas.removeEventListener('mousemove', onPaint, false);
-			ctx.lineTo(mouse.x, mouse.y);
-			ctx.stroke();
+		tmpcanvas.addEventListener('mouseup', function() {
+			tmpcanvas.removeEventListener('mousemove', onPaint, false);
+			tmpctx.lineTo(mouse.x, mouse.y);
+			tmpctx.stroke();
+			ctx.drawImage(tmpcanvas, 0, 0);
+			tmpctx.clearRect(0, 0, tmpcanvas.width, tmpcanvas.height);
 		}, false);
 
 
 		// bind event handler to clear button
 		document.getElementById('clear').addEventListener('click', function() {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			init();
+			// init();
 		}, false);
 	  
