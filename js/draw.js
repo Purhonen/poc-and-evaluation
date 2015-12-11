@@ -51,7 +51,15 @@
 
 		function init (){
 			loadImages(sources, function(images) {
-				imagectx.drawImage(images.pohja, 100, 30, 500, 500);
+				/**
+				imagecanvas.width = images.pohja.width;
+				imagecanvas.height = images.pohja.height;
+				canvas.width = images.pohja.width;
+				canvas.height = images.pohja.height;
+				tmpcanvas.width = images.pohja.width;
+				tmpcanvas.height = images.pohja.height;
+				**/
+				imagectx.drawImage(images.pohja, 100, 30, images.pohja.height, images.pohja.width);
 			});
 		}
 
